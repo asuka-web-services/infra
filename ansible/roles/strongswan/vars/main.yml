@@ -1,0 +1,5 @@
+__strongswan_config_path: /etc/swanctl/swanctl.conf
+__strongswan_cmd_path: /usr/sbin/swanctl
+__strongswan_install_packages:
+  - charon-systemd
+  - strongswan-swanctl

@@ -1,0 +1,6 @@
+{% for ntp_server in univerge_ix_ntp_servers | default([]) | reverse %}
+ntp server {{ ntp_server.address }} timeout 10 priority {{ 10 * loop.index }}
+{% endfor %}
+{% if univerge_ix_ntp_interval is defined %}
+ntp interval {{ univerge_ix_ntp_interval }}
+{% endif %}

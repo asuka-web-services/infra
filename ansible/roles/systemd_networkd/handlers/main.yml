@@ -1,0 +1,31 @@
+- name: "🔄️ Reboot host"
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+  become: true
+  listen:
+    - systemd_networkd_reboot_host
+
+- name: "🔄️ Reload config"
+  ansible.builtin.command:
+    cmd: networkctl reload
+  become: true
+  changed_when: true
+  listen:
+    - systemd_networkd_reload_config
+
+- name: "🔄️ Reconfigure lo interfaces"
+  ansible.builtin.command:
+    cmd: networkctl reconfigure lo
+  become: true
+  changed_when: true
+  listen:
+    - systemd_networkd_reload_config
+
+- name: "🔄️ Reconfigure vpn tunnels"
+  ansible.builtin.command:
+    cmd: "networkctl reconfigure {{ item.name }}"
+  loop: "{{ systemd_networkd_vpn_interfaces }}"
+  become: true
+  changed_when: true
+  listen:
+    - systemd_networkd_reload_config

@@ -1,0 +1,21 @@
+{# -------------------------------------------------------------
+Undefined Devices
+------------------------------------------------------------- #}
+{% set defined_devices = univerge_ix_devices | default([]) | map(attribute='name') %}
+{% for device in __univerge_ix_default_devices %}
+{% if device.name not in defined_devices %}
+device {{ device.name }}
+{% for command in device.config | default([]) %}
+  {{ command }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{# -------------------------------------------------------------
+Defined Devices
+------------------------------------------------------------- #}
+{% for device in univerge_ix_devices | default([]) %}
+device {{ device.name }}
+{% if device.keepalive is defined %}
+  keepalive {{ device.keepalive.time }} {{ device.keepalive.count }}
+{% endif %}
+{% endfor %}

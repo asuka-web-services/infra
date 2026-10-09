@@ -1,0 +1,8 @@
+# {{ ansible_managed | comment }}
+
+[Match]
+Name={{ item.name }}
+
+[Network]
+Address={{ item.tunnel_address }}
+ConfigureWithoutCarrier=yes

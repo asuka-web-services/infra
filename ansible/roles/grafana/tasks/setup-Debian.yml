@@ -1,0 +1,35 @@
+- name: "📦 Install the prerequisite packages"
+  ansible.builtin.apt:
+    name: "{{ __grafana_prerequisite_packages }}"
+    state: present
+  become: true
+
+- name: "📁 Ensure keyrings directory exists"
+  ansible.builtin.file:
+    path: "{{ __grafana_keyring_path | dirname }}"
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: "📦 Download Grafana GPG key"
+  ansible.builtin.get_url:
+    url: "{{ __grafana_gpg_key_url }}"
+    dest: "{{ __grafana_keyring_path }}"
+    mode: "0644"
+  become: true
+  check_mode: false
+
+- name: "📦 Add Grafana APT repository"
+  ansible.builtin.apt_repository:
+    repo: "{{ __grafana_apt_repo }}"
+    filename: grafana
+    state: present
+    update_cache: true
+  become: true
+  check_mode: false
+
+- name: "📦 Install Grafana"
+  ansible.builtin.apt:
+    name: "{{ __grafana_package_name }}"
+    state: present
+  become: true

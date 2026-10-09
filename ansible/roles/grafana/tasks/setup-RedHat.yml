@@ -1,0 +1,17 @@
+- name: "📦 Add Grafana YUM/DNF repository"
+  ansible.builtin.yum_repository:
+    name: "{{ __grafana_yum_repo_config.name }}"
+    description: "{{ __grafana_yum_repo_config.description }}"
+    baseurl: "{{ __grafana_yum_repo_config.baseurl }}"
+    repo_gpgcheck: "{{ __grafana_yum_repo_config.repo_gpgcheck }}"
+    enabled: "{{ __grafana_yum_repo_config.enabled }}"
+    gpgcheck: "{{ __grafana_yum_repo_config.gpgcheck }}"
+    gpgkey: "{{ __grafana_yum_repo_config.gpgkey }}"
+    sslverify: "{{ __grafana_yum_repo_config.sslverify }}"
+  become: true
+
+- name: "📦 Install Grafana"
+  ansible.builtin.dnf:
+    name: "{{ __grafana_package_name }}"
+    state: present
+  become: true

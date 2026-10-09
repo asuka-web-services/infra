@@ -1,0 +1,37 @@
+- name: "Load model-specific variables"
+  ansible.builtin.include_vars:
+    file: "models/{{ univerge_ix_model }}.yml"
+
+- name: "📥 Get raw running config"
+  ansible.netcommon.cli_command:
+    command: "{{ item }}"
+  loop:
+    - svintr-config
+    - configure
+    - terminal length 0
+    - show running-config
+  register: raw_running_config
+  check_mode: false
+
+- name: "📝 Render running config & desired config"
+  ansible.builtin.set_fact:
+    running_config: "{{ raw_running_config.results[-1].stdout }}"
+    desired_config: "{{ lookup('ansible.builtin.template', 'config.j2') }}"
+
+- name: "✨ Generate apply commands"
+  ansible.builtin.set_fact:
+    apply_commands: "{{ running_config | to_be(desired_config) }}"
+
+- name: "👀 Preview config changes"
+  ansible.builtin.debug:
+    msg: "{{ apply_commands }}"
+  changed_when: apply_commands | length > 0
+
+- name: "⚙️ Apply commands"
+  ansible.netcommon.cli_command:
+    command: "{{ item }}"
+  loop: "{{ apply_commands }}"
+  when: not ansible_check_mode
+
+- name: "🔄 Restart if needed"
+  ansible.builtin.include_tasks: post_apply.yml

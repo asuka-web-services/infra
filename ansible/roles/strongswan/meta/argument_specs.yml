@@ -1,0 +1,29 @@
+argument_specs:
+  main:
+    options:
+      strongswan_connections:
+        type: list
+        elements: dict
+        required: true
+        options:
+          name:
+            type: str
+            required: true
+          if_id:
+            type: int
+            required: true
+          psk_secret:
+            type: str
+            required: true
+          remote_addrs:
+            type: str
+            required: true
+          remote_id:
+            type: str
+            required: true
+      strongswan_local_addrs:
+        type: str
+        required: true
+      strongswan_local_id:
+        type: str
+        required: true

@@ -1,0 +1,39 @@
+- name: "🚀 Setup os-vps-01 network"
+  hosts:
+    - os-vps-01
+  roles:
+    - systemd_networkd
+
+- name: "🚀 Setup os-vps-01"
+  hosts:
+    - os-vps-01
+  roles:
+    - strongswan
+    - firewall
+
+- name: "🚀 Setup nr-rt-edge-01"
+  hosts:
+    - nr-rt-edge-01
+  roles:
+    - univerge_ix
+  gather_facts: false
+
+- name: "🚀 Setup nr-sw-core-01/02"
+  hosts:
+    - nr-sw-core-01
+    - nr-sw-core-02
+  roles:
+    - junos
+  gather_facts: false
+
+- name: "🚀 Setup Proxmox VE"
+  hosts:
+    - pve
+  roles:
+    - proxmox_virtual_environment
+
+- name: "🚀 Setup Grafana"
+  hosts:
+    - nr-sv-grafana-01
+  roles:
+    - grafana

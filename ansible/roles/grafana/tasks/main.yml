@@ -1,0 +1,15 @@
+- name: "🔹 Include OS-specific variables"
+  ansible.builtin.include_vars:
+    file: "{{ ansible_os_family }}.yml"
+
+- name: "🔹 Setup Grafana repository and install packages"
+  ansible.builtin.include_tasks:
+    file: "setup-{{ ansible_os_family }}.yml"
+
+- name: "✅ Ensure Grafana service is enabled and started"
+  ansible.builtin.systemd:
+    name: "{{ __grafana_service_name }}"
+    enabled: true
+    state: started
+  become: true
+  when: not ansible_check_mode

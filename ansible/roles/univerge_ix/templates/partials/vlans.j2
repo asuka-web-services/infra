@@ -1,0 +1,15 @@
+{% if univerge_ix_vlans is defined and univerge_ix_vlans %}
+bridge irb enable
+{% endif %}
+{% for vlan in univerge_ix_vlans | default([]) %}
+interface BVI{{ loop.index0 }}
+  description {{ vlan.description | default('') }}
+{% if vlan.interface is defined %}
+{% if vlan.interface.vrf is defined %}
+  ip vrf forwarding {{ vlan.interface.vrf }}
+{% endif %}
+  ip address {{ vlan.interface.address }}
+{% endif %}
+  bridge-group {{ vlan.id }}
+  no shutdown
+{% endfor %}

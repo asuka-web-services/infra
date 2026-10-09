@@ -1,0 +1,6 @@
+{% if univerge_ix_netmeister is defined %}
+nm ip enable
+nm account {{ univerge_ix_netmeister.account }} password secret {{ univerge_ix_netmeister.secret }}
+nm sitename {{ univerge_ix_netmeister.site_name }}
+nm outgoing-interface {{ univerge_ix_netmeister.outgoing_interface }} auto protocol ip
+{% endif %}

@@ -1,0 +1,5 @@
+strongswan_local_ts: 0.0.0.0/0
+strongswan_remote_ts: 0.0.0.0/0
+strongswan_esp_proposals: "aes256-sha512-modp3072"
+strongswan_ike_proposals: "aes256-sha512-modp3072"
+strongswan_ike_version: 2

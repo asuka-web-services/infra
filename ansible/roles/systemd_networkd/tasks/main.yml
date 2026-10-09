@@ -1,0 +1,68 @@
+- name: "📦 Install systemd-resolved"
+  ansible.builtin.package:
+    name: "{{ __systemd_networkd_install_packages }}"
+    state: present
+  become: true
+
+- name: "⚙️ Configure systemd-networkd base networks"
+  ansible.builtin.template:
+    src: base.network.j2
+    dest: "{{ __systemd_networkd_conf_dir }}/10-{{ item.name }}.network"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ systemd_networkd_base_networks }}"
+  become: true
+  notify:
+    - systemd_networkd_reload_config
+
+- name: "⚙️ Configure systemd-networkd vpn devices"
+  ansible.builtin.template:
+    src: vpn.netdev.j2
+    dest: "{{ __systemd_networkd_conf_dir }}/20-{{ item.name }}.netdev"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ systemd_networkd_vpn_interfaces }}"
+  become: true
+  notify:
+    - systemd_networkd_reload_config
+
+- name: "⚙️ Configure systemd-networkd vpn networks"
+  ansible.builtin.template:
+    src: vpn.network.j2
+    dest: "{{ __systemd_networkd_conf_dir }}/20-{{ item.name }}.network"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ systemd_networkd_vpn_interfaces }}"
+  become: true
+  notify:
+    - systemd_networkd_reload_config
+
+- name: "🔗 Configure resolv.conf symlink for systemd-resolved"
+  ansible.builtin.file:
+    src: "{{ __systemd_networkd_stub_src }}"
+    dest: "{{ __systemd_networkd_stub_dest }}"
+    state: link
+    force: true
+  become: true
+
+- name: "✅ Enable systemd-networkd & systemd-resolved"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: true
+  loop: "{{ __systemd_networkd_required_services }}"
+  become: true
+  when: not ansible_check_mode
+  notify:
+    - systemd_networkd_reboot_host
+
+- name: "❌ Disable legacy network service"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+  loop: "{{ __systemd_networkd_legacy_services }}"
+  become: true
+  notify:
+    - systemd_networkd_reboot_host

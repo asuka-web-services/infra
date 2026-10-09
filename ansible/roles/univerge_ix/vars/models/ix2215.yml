@@ -1,0 +1,57 @@
+__univerge_ix_default_devices:
+  - name: GigaEthernet0
+    config:
+      - shutdown
+  - name: GigaEthernet1
+    config:
+      - shutdown
+  - name: GigaEthernet2
+    config:
+      - shutdown
+  - name: BRI0
+    config:
+      - isdn switch-type hsd128k
+  - name: USB0
+    config:
+      - shutdown
+
+__univerge_ix_default_interfaces:
+  - name: GigaEthernet0.0
+    device: GigaEthernet0
+    config:
+      - no ip address
+      - shutdown
+  - name: GigaEthernet1.0
+    device: GigaEthernet1
+    config:
+      - no ip address
+      - shutdown
+  - name: GigaEthernet2.0
+    device: GigaEthernet2
+    config:
+      - no ip address
+      - shutdown
+  - name: BRI0.0
+    device: BRI0
+    config:
+      - encapsulation ppp
+      - no auto-connect
+      - no ip address
+      - shutdown
+  - name: USB-Serial0.0
+    device: USB0
+    config:
+      - encapsulation ppp
+      - no auto-connect
+      - no ip address
+      - shutdown
+
+__univerge_ix_default_loopback_interfaces:
+  - name: Loopback0.0
+    config:
+      - no ip address
+
+__univerge_ix_default_null_interfaces:
+  - name: Null0.0
+    config:
+      - no ip address
