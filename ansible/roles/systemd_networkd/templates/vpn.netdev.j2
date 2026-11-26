@@ -1,0 +1,9 @@
+# {{ ansible_managed | comment }}
+
+[NetDev]
+Name={{ item.name }}
+Kind=xfrm
+
+[Xfrm]
+InterfaceId={{ item.if_id }}
+Independent=yes

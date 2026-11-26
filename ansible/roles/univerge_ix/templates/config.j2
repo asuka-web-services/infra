@@ -1,0 +1,15 @@
+{{ ansible_managed | comment(decoration='! ') }}
+hostname {{ inventory_hostname }}
+timezone +09 00
+service password-encryption
+ip ufs-cache enable
+ip dhcp enable
+ssh-server ip enable
+{% include 'partials/administrators.j2' %}
+{% include 'partials/ntp_servers.j2' %}
+{% include 'partials/static_routes.j2' %}
+{% include 'partials/netmeister.j2' %}
+{% include 'partials/devices.j2' %}
+{% include 'partials/interfaces.j2' %}
+{% include 'partials/vlans.j2' %}
+{% include 'partials/ipsec_tunnels.j2' %}

@@ -1,0 +1,7 @@
+- name: "🔄️ Reload strongSwan"
+  ansible.builtin.command:
+    cmd: "{{ __strongswan_cmd_path }} --load-all"
+  become: true
+  changed_when: true
+  listen:
+    - strongswan_reload_config

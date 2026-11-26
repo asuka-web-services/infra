@@ -1,0 +1,40 @@
+argument_specs:
+  main:
+    options:
+      systemd_networkd_base_networks:
+        type: list
+        elements: dict
+        required: true
+        options:
+          name:
+            type: str
+            required: true
+          match_name:
+            type: str
+            required: true
+          address:
+            type: str
+            required: true
+          dns:
+            type: str
+            required: false
+          domains:
+            type: str
+            required: false
+          gateway:
+            type: str
+            required: false
+      systemd_networkd_vpn_interfaces:
+        type: list
+        elements: dict
+        required: true
+        options:
+          name:
+            type: str
+            required: true
+          if_id:
+            type: int
+            required: true
+          tunnel_address:
+            type: str
+            required: true

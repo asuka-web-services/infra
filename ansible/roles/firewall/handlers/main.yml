@@ -1,0 +1,15 @@
+- name: "🔄️ Reload sysctl"
+  ansible.builtin.command:
+    cmd: "{{ __firewall_sysctl_cmd_path }} -p {{ __firewall_sysctl_conf_path }}"
+  become: true
+  changed_when: true
+  listen:
+    - firewall_reload_sysctl
+
+- name: "🔄️ Reload nftables"
+  ansible.builtin.command:
+    cmd: "{{ __firewall_nftables_cmd_path }} -f {{ __firewall_nftables_conf_path }}"
+  become: true
+  changed_when: true
+  listen:
+    - firewall_reload_nftables

@@ -1,0 +1,16 @@
+- name: "📦 Install strongSwan"
+  ansible.builtin.package:
+    name: "{{ __strongswan_install_packages }}"
+    state: present
+  become: true
+
+- name: "⚙️ Configure strongSwan"
+  ansible.builtin.template:
+    src: swanctl.conf.j2
+    dest: "{{ __strongswan_config_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  notify:
+    - strongswan_reload_config

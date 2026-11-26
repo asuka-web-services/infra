@@ -1,0 +1,8 @@
+univerge_ix_ipsec_esp_proposal:
+  encryption: aes-cbc-256
+  integrity: sha2-512
+  pfs: 3072-bit
+univerge_ix_ipsec_ike_proposal:
+  encryption: aes-cbc-256
+  integrity: sha2-512
+  dh: 3072-bit

@@ -1,0 +1,6 @@
+global:
+  scrape_interval: {{ prometheus_prometheus_scrape_interval | to_json }}
+  evaluation_interval: {{ prometheus_prometheus_evaluation_interval | to_json }}
+
+scrape_configs:
+{{ prometheus_prometheus_scrape_configs | to_nice_yaml(indent=2) | indent(2, true) }}

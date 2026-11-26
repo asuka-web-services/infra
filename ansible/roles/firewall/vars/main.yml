@@ -1,0 +1,6 @@
+__firewall_install_packages:
+  - nftables
+__firewall_nftables_cmd_path: /usr/sbin/nft
+__firewall_nftables_conf_path: /etc/nftables.conf
+__firewall_sysctl_cmd_path: /usr/sbin/sysctl
+__firewall_sysctl_conf_path: /etc/sysctl.d/99-custom.conf

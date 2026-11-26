@@ -1,0 +1,24 @@
+# {{ ansible_managed | comment }}
+
+[Match]
+Name={{ item.match_name }}
+
+[Network]
+Address={{ item.address }}
+{% if item.dns is defined %}
+DNS={{ item.dns }}
+{% endif -%}
+
+{% if item.domains is defined %}
+Domains={{ item.domains }}
+{% endif -%}
+
+{% if item.gateway is defined %}
+Gateway={{ item.gateway }}
+{% endif -%}
+
+{% if item.name == 'lo' and systemd_networkd_vpn_interfaces is defined %}
+{% for interface in systemd_networkd_vpn_interfaces %}
+Xfrm={{ interface.name }}
+{% endfor -%}
+{% endif -%}

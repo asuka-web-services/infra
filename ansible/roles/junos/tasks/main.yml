@@ -1,0 +1,9 @@
+- name: "📥 Get active-config"
+  ansible.netcommon.cli_command:
+    command: show configuration
+  register: config
+  check_mode: false
+
+- name: "🧪 Show active-config"
+  ansible.builtin.debug:
+    var: "{{ config.stdout }}"

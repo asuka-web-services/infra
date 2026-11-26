@@ -1,0 +1,10 @@
+__systemd_networkd_conf_dir: /etc/systemd/network
+__systemd_networkd_install_packages:
+  - systemd-resolved
+__systemd_networkd_legacy_services:
+  - networking
+__systemd_networkd_required_services:
+  - systemd-networkd
+  - systemd-resolved
+__systemd_networkd_stub_dest: /etc/resolv.conf
+__systemd_networkd_stub_src: /run/systemd/resolve/stub-resolv.conf

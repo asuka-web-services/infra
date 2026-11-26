@@ -1,0 +1,19 @@
+{% for route in univerge_ix_static_routes | default([]) %}
+{% set command = namespace(parameters=['ip route']) %}
+{# [vrf VRFNAME] #}
+{% if route.vrf is defined %}
+{% set command.parameters = command.parameters + ['vrf', route.vrf] %}
+{% endif %}
+{# {ADDRESS/MASKLENGTH | default} #}
+{% set command.parameters = command.parameters + [route.prefix] %}
+{# {NEXTHOP [INTERFACE] | INTERFACE [NEXTHOP | dhcp]} #}
+{% if route.next_hop is defined and route.interface is not defined %}
+{% set command.parameters = command.parameters + [route.next_hop] %}
+{% elif route.next_hop is not defined and route.interface is defined %}
+{% set command.parameters = command.parameters + [route.interface] %}
+{% if route.dhcp | default(false) %}
+{% set command.parameters = command.parameters + ['dhcp'] %}
+{% endif %}
+{% endif %}
+{{ command.parameters | join(' ') }}
+{% endfor %}

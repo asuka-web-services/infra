@@ -1,0 +1,29 @@
+{% for tunnel in univerge_ix_ipsec_tunnels | default([]) %}
+ikev2 authentication psk id fqdn {{ tunnel.remote_id }} key secret {{ tunnel.psk }}
+interface Tunnel{{ loop.index0 }}.0
+  description {{ tunnel.description }}
+  tunnel mode ipsec-ikev2
+{% if tunnel.vrf is defined %}
+  ip vrf forwarding {{ tunnel.vrf }}
+{% endif %}
+  ip address {{ tunnel.address }}
+  ip tcp adjust-mss auto
+  ikev2 child-pfs {{ univerge_ix_ipsec_esp_proposal.pfs }}
+  ikev2 child-proposal enc {{ univerge_ix_ipsec_esp_proposal.encryption }}
+  ikev2 child-proposal integrity {{ univerge_ix_ipsec_esp_proposal.integrity }}
+  ikev2 connect-type auto
+  ikev2 dpd interval 10
+  ikev2 local-authentication psk id fqdn {{ tunnel.local_id }}
+  ikev2 outgoing-interface {{ tunnel.outgoing_interface }}
+  ikev2 sa-proposal enc {{ univerge_ix_ipsec_ike_proposal.encryption }}
+  ikev2 sa-proposal integrity {{ univerge_ix_ipsec_ike_proposal.integrity }}
+  ikev2 sa-proposal dh {{ univerge_ix_ipsec_ike_proposal.dh }}
+  ikev2 peer {{ tunnel.remote_address }} authentication psk id fqdn {{ tunnel.remote_id }}
+  no shutdown
+{% if tunnel.monitoring is defined %}
+watch-group watch-{{ tunnel.monitoring.id }} 10
+  event 10 vrf {{ tunnel.vrf }} ip unreach-host {{ tunnel.monitoring.check_host }}
+  action 10 {{ tunnel.monitoring.failure_action }}
+network-monitor watch-{{ tunnel.monitoring.id }} enable
+{% endif %}
+{% endfor %}

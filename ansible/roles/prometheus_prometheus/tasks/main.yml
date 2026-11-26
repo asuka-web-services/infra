@@ -1,0 +1,93 @@
+- name: "👤 Ensure prometheus/prometheus group exists"
+  ansible.builtin.group:
+    name: "{{ __prometheus_prometheus_group }}"
+    system: true
+    state: present
+  become: true
+
+- name: "👤 Ensure prometheus/prometheus user exists"
+  ansible.builtin.user:
+    name: "{{ __prometheus_prometheus_user }}"
+    group: "{{ __prometheus_prometheus_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+    state: present
+  become: true
+
+- name: "📁 Ensure prometheus/prometheus directories exist"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ __prometheus_prometheus_archive_dir }}"
+      owner: root
+      group: root
+      mode: "0755"
+    - path: "{{ __prometheus_prometheus_install_dir }}"
+      owner: root
+      group: root
+      mode: "0755"
+    - path: "{{ __prometheus_prometheus_config_dir }}"
+      owner: root
+      group: "{{ __prometheus_prometheus_group }}"
+      mode: "0750"
+    - path: "{{ __prometheus_prometheus_data_dir }}"
+      owner: "{{ __prometheus_prometheus_user }}"
+      group: "{{ __prometheus_prometheus_group }}"
+      mode: "0750"
+  become: true
+
+- name: "📦 Download prometheus/prometheus binary archive"
+  ansible.builtin.get_url:
+    url: "{{ __prometheus_prometheus_archive_url }}"
+    dest: "{{ __prometheus_prometheus_archive_path }}"
+    checksum: "sha256:{{ __prometheus_prometheus_archive_sha256 }}"
+    owner: root
+    group: root
+    mode: "0644"
+    force: true
+  become: true
+
+- name: "📦 Extract prometheus/prometheus binary archive"
+  ansible.builtin.unarchive:
+    src: "{{ __prometheus_prometheus_archive_path }}"
+    dest: "{{ __prometheus_prometheus_install_dir }}"
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+  become: true
+
+- name: "🚀 Deploy prometheus/prometheus configuration"
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ __prometheus_prometheus_config_dir }}/prometheus.yml"
+    owner: root
+    group: "{{ __prometheus_prometheus_group }}"
+    mode: "0640"
+    validate: "{{ __prometheus_prometheus_install_dir }}/promtool check config %s"
+  become: true
+  notify:
+    - prometheus_prometheus_restart_prometheus
+
+- name: "🚀 Deploy prometheus/prometheus systemd unit"
+  ansible.builtin.template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify:
+    - prometheus_prometheus_reload_systemd_daemon
+    - prometheus_prometheus_restart_prometheus
+
+- name: "✅ Ensure prometheus/prometheus is enabled and running"
+  ansible.builtin.systemd_service:
+    name: prometheus
+    enabled: true
+    state: started
+  become: true

@@ -1,0 +1,20 @@
+- name: "📦 Remove enterprise repository"
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/pve-enterprise.sources
+    state: absent
+
+- name: "📦 Add no-subscription repository"
+  ansible.builtin.copy:
+    src: proxmox.sources
+    dest: /etc/apt/sources.list.d/
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: "📦 Add ceph no-subscription repository"
+  ansible.builtin.copy:
+    src: ceph.sources
+    dest: /etc/apt/sources.list.d/
+    owner: root
+    group: root
+    mode: "0644"

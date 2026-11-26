@@ -1,0 +1,14 @@
+__grafana_yum_repo_config:
+  name: grafana
+  description: grafana
+  baseurl:
+    - https://rpm.grafana.com
+  repo_gpgcheck: true
+  enabled: true
+  gpgcheck: true
+  gpgkey:
+    - https://rpm.grafana.com/gpg.key
+  sslverify: true
+__grafana_package_name:
+  - grafana
+__grafana_service_name: grafana-server

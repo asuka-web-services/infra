@@ -1,0 +1,8 @@
+prometheus_prometheus_arch: amd64
+prometheus_prometheus_archive_sha256: 0388822ace519c5a3a8ef556a541ce1b536e21d872f82deded465bd27a5a0699
+prometheus_prometheus_os: linux
+prometheus_prometheus_version: 3.13.5
+
+prometheus_prometheus_evaluation_interval: 15s
+prometheus_prometheus_scrape_interval: 15s
+prometheus_prometheus_scrape_configs: {}

@@ -1,0 +1,6 @@
+- name: "🔹 Configure No-Subscription Repository"
+  ansible.builtin.include_tasks:
+    file: configure-repository.yml
+- name: "🔹 Upgrade system to the latest version"
+  ansible.builtin.include_tasks:
+    file: upgrade-system.yml

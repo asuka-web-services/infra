@@ -1,0 +1,13 @@
+[Unit]
+Description=prometheus/prometheus
+After=network-online.target
+
+[Service]
+User={{ __prometheus_prometheus_user }}
+Group={{ __prometheus_prometheus_group }}
+ExecStart={{ __prometheus_prometheus_install_dir }}/prometheus \
+  --config.file={{ __prometheus_prometheus_config_dir }}/prometheus.yml \
+  --storage.tsdb.path={{ __prometheus_prometheus_data_dir }} \
+
+[Install]
+WantedBy=multi-user.target

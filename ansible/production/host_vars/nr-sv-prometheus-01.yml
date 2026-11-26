@@ -1,0 +1,51 @@
+ansible_host: 192.168.97.103
+
+prometheus_prometheus_scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: snmp_exporter
+    static_configs:
+      - targets:
+          - "{{ hostvars['nr-sv-snmpexporter-01'].ansible_host }}:9116"
+
+  - job_name: snmp_nec_ix
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    metrics_path: /snmp
+    params:
+      auth: [ix_v3]
+      module: [if_mib, nec_ix]
+    static_configs:
+      - targets:
+          - "{{ hostvars['nr-rt-edge-01'].ansible_host }}"
+        labels:
+          device: nr-rt-edge-01
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: "{{ hostvars['nr-sv-snmpexporter-01'].ansible_host }}:9116"
+
+  - job_name: snmp_buffalo
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    metrics_path: /snmp
+    params:
+      auth: [buffalo_v3]
+      module: [if_mib]
+    static_configs:
+      - targets:
+          - "{{ hostvars['nr-ap-01'].ansible_host }}"
+        labels:
+          device: nr-ap-01
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: "{{ hostvars['nr-sv-snmpexporter-01'].ansible_host }}:9116"

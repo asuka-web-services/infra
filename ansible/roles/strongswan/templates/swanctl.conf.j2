@@ -1,0 +1,37 @@
+# {{ ansible_managed | comment }}
+
+connections {
+{% for conn in strongswan_connections %}
+  {{ conn.name }} {
+    version      = {{ strongswan_ike_version }}
+    local_addrs  = {{ strongswan_local_addrs }}
+    remote_addrs = {{ conn.remote_addrs }}
+    proposals    = {{ strongswan_ike_proposals }}
+    local {
+      auth = psk
+      id   = {{ strongswan_local_id }}
+    }
+    remote {
+      auth = psk
+      id   = {{ conn.remote_id }}
+    }
+    children {
+      default-ts {
+        local_ts      = {{ strongswan_local_ts }}
+        remote_ts     = {{ strongswan_remote_ts }}
+        esp_proposals = {{ strongswan_esp_proposals }}
+        if_id_in      = {{ conn.if_id }}
+        if_id_out     = {{ conn.if_id }}
+      }
+    }
+  }
+{% endfor %}
+}
+secrets {
+{% for conn in strongswan_connections %}
+  ike-{{ conn.name }} {
+    id     = {{ conn.remote_id }}
+    secret = {{ conn.psk_secret }}
+  }
+{% endfor %}
+}

@@ -1,0 +1,78 @@
+{# -------------------------------------------------------------
+Undefined Interfaces
+------------------------------------------------------------- #}
+{% set defined_interfaces = univerge_ix_interfaces | default([]) | map(attribute='device') %}
+{% for interface in __univerge_ix_default_interfaces %}
+{% if interface.device not in defined_interfaces %}
+interface {{ interface.name }}
+{% for command in interface.config | default([]) %}
+  {{ command }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% for interface in __univerge_ix_default_loopback_interfaces %}
+interface {{ interface.name }}
+{% for command in interface.config | default([]) %}
+  {{ command }}
+{% endfor %}
+{% endfor %}
+{% for interface in __univerge_ix_default_null_interfaces %}
+interface {{ interface.name }}
+{% for command in interface.config | default([]) %}
+  {{ command }}
+{% endfor %}
+{% endfor %}
+{# -------------------------------------------------------------
+Defined Interfaces
+------------------------------------------------------------- #}
+{% for interface in univerge_ix_interfaces | default([]) %}
+{# -----------------------------
+Routed Port
+----------------------------- #}
+{% if interface.mode == 'routed' %}
+interface {{ interface.device }}.0
+  description {{ interface.description }}
+{% if interface.dhcp | default(false) %}
+  ip address dhcp receive-default
+{% endif %}
+{% if interface.napt | default(false) %}
+  ip napt enable
+{% endif %}
+  no shutdown
+{% if interface.monitoring is defined %}
+watch-group watch-{{ interface.monitoring.id }} 10
+  event 10 ip unreach-host {{ interface.monitoring.check_host }} {{ interface.device }}.0
+  action 10 {{ interface.monitoring.failure_action }}
+network-monitor watch-{{ interface.monitoring.id }} enable
+{% endif %}
+{# -----------------------------
+Access Port
+----------------------------- #}
+{% elif interface.mode == 'access' %}
+interface {{ interface.device }}.0
+  description {{ interface.description }}
+  no ip address
+  bridge-group {{ interface.vlan }}
+  no shutdown
+{# -----------------------------
+Trunk Port
+----------------------------- #}
+{% elif interface.mode == 'trunk' %}
+interface {{ interface.device }}.0
+  description {{ interface.description }}
+  no ip address
+{% if interface.native_vlan is defined %}
+  bridge-group {{ interface.native_vlan }}
+{% endif %}
+  no shutdown
+{% for vlan_id in interface.allowed_vlans | default([]) %}
+interface {{ interface.device }}.{{ loop.index }}
+  description {{ interface.description }}
+  encapsulation dot1q {{ vlan_id }} tpid 8100
+  auto-connect
+  no ip address
+  bridge-group {{ vlan_id }}
+  no shutdown
+{% endfor %}
+{% endif %}
+{% endfor %}

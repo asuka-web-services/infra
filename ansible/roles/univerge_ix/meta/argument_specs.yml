@@ -1,0 +1,201 @@
+argument_specs:
+  main:
+    options:
+      univerge_ix_model:
+        type: str
+        choices:
+          - ix2215
+        required: true
+      univerge_ix_administrators:
+        type: list
+        elements: dict
+        required: true
+        options:
+          username:
+            type: str
+            required: true
+          password_hash:
+            type: str
+            required: true
+
+      univerge_ix_netmeister:
+        type: dict
+        required: false
+        options:
+          account:
+            type: str
+            required: true
+          secret:
+            type: str
+            required: true
+          site_name:
+            type: str
+            required: true
+          outgoing_interface:
+            type: str
+            required: true
+
+      univerge_ix_ntp_servers:
+        type: list
+        elements: dict
+        required: false
+        options:
+          address:
+            type: str
+            required: true
+
+      univerge_ix_ntp_interval:
+        type: int
+        required: false
+
+      univerge_ix_vlans:
+        type: list
+        elements: dict
+        required: false
+        options:
+          id:
+            type: int
+            required: true
+          description:
+            type: str
+            required: false
+          interface:
+            type: dict
+            required: false
+            options:
+              address:
+                type: str
+                required: true
+              vrf:
+                type: str
+                required: false
+
+      univerge_ix_devices:
+        type: list
+        elements: dict
+        required: false
+        options:
+          name:
+            type: str
+            required: true
+          keepalive:
+            type: dict
+            required: false
+            options:
+              time:
+                type: int
+                required: true
+              count:
+                type: int
+                required: true
+
+      univerge_ix_interfaces:
+        type: list
+        elements: dict
+        required: false
+        options:
+          device:
+            type: str
+            required: true
+          description:
+            type: str
+            required: false
+          mode:
+            type: str
+            choices:
+              - routed
+              - access
+              - trunk
+            required: true
+          dhcp:
+            type: bool
+            required: false
+          napt:
+            type: bool
+            required: false
+          monitoring:
+            type: dict
+            required: false
+            options:
+              id:
+                type: str
+                required: true
+              check_host:
+                type: str
+                required: true
+              failure_action:
+                type: str
+                required: true
+          vlan:
+            type: int
+            required: false
+          native_vlan:
+            type: int
+            required: false
+          allowed_vlans:
+            type: list
+            elements: int
+            required: false
+
+      univerge_ix_ipsec_tunnels:
+        type: list
+        elements: dict
+        required: false
+        options:
+          description:
+            type: str
+            required: false
+          address:
+            type: str
+            required: true
+          outgoing_interface:
+            type: str
+            required: true
+          psk:
+            type: str
+            required: true
+          local_id:
+            type: str
+            required: true
+          remote_id:
+            type: str
+            required: true
+          remote_address:
+            type: str
+            required: false
+          vrf:
+            type: str
+            required: false
+          monitoring:
+            type: dict
+            required: false
+            options:
+              id:
+                type: str
+                required: true
+              check_host:
+                type: str
+                required: true
+              failure_action:
+                type: str
+                required: true
+      univerge_ix_static_routes:
+        type: list
+        elements: dict
+        required: false
+        options:
+          prefix:
+            type: str
+            required: true
+          next_hop:
+            type: str
+            required: false
+          interface:
+            type: str
+            required: false
+          dhcp:
+            type: bool
+            required: false
+          vrf:
+            type: str
+            required: false
